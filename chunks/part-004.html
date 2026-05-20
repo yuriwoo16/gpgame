@@ -1,0 +1,400 @@
+      }
+
+      @keyframes resultCouponPulse {
+        50% {
+          transform: translateY(-3px) scale(1.012);
+          box-shadow:
+            0 30px 48px rgba(255, 15, 109, 0.16),
+            0 10px 20px rgba(25, 31, 40, 0.08);
+        }
+      }
+
+      @keyframes resultValuePop {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.86);
+        }
+
+        70% {
+          transform: translateY(0) scale(1.08);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes resultShine {
+        from {
+          transform: translateX(0) rotate(18deg);
+        }
+
+        to {
+          transform: translateX(390%) rotate(18deg);
+        }
+      }
+
+      @keyframes resultGlowPulse {
+        50% {
+          opacity: 0.72;
+          transform: translate(-50%, -50%) scale(1.12);
+        }
+      }
+
+      @keyframes resultParticle {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.72) rotate(var(--r));
+        }
+
+        14% {
+          opacity: 1;
+        }
+
+        100% {
+          opacity: 0;
+          transform:
+            translate(calc(-50% + var(--x)), calc(-50% + var(--y)))
+            scale(1)
+            rotate(calc(var(--r) + 36deg));
+        }
+      }
+
+      @media (max-height: 660px) {
+        .subcopy {
+          display: none;
+        }
+
+        .result-copy {
+          font-size: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <section class="screen intro-screen is-active" id="introScreen">
+        <div class="headline">
+          <p class="eyebrow">공동구매 쿠폰 도전</p>
+          <h1>30명을 모으면<br />10% 쿠폰이 열려요</h1>
+          <p class="subcopy">참여자를 빠르게 눌러 공구 인원을 채워보세요.</p>
+        </div>
+
+        <div class="stage">
+          <span class="preview-person" data-avatar="0" style="left: 13%; top: 18%"></span>
+          <span class="preview-person" data-avatar="1" style="right: 14%; top: 16%"></span>
+          <span class="preview-person" data-avatar="2" style="left: 11%; bottom: 22%"></span>
+          <span class="preview-person" data-avatar="3" style="right: 12%; bottom: 24%"></span>
+          <span class="preview-person" data-avatar="4" style="left: 43%; top: 11%"></span>
+          <div class="target-badge" aria-hidden="true">
+            <div>
+              <p class="target-number">30</p>
+              <p class="target-text">명 모으기</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-zone">
+          <button class="primary-button" id="startButton">시작하기</button>
+          <p class="chance-note" id="chanceNote">참여 기회 1번</p>
+        </div>
+      </section>
+
+      <section class="screen game-screen" id="gameScreen">
+        <div>
+          <div class="hud">
+            <div class="goal">
+              <p class="goal-title" id="goalTitle">1단계</p>
+            </div>
+            <div class="timer" id="timerText">남은 시간 12초</div>
+          </div>
+
+          <div class="meter-wrap">
+            <div class="meter" aria-hidden="true">
+              <div class="meter-fill" id="meterFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stage game-stage" id="playField">
+          <div class="field-target" id="fieldTarget" aria-hidden="true">
+            <div>
+              <strong id="fieldTargetCount">0</strong>
+              <span>/ 30명</span>
+            </div>
+          </div>
+          <div class="guide" id="guide">참여자를 눌러<br />인원을 모아보세요</div>
+        </div>
+
+        <div class="countdown-overlay" id="countdownOverlay" aria-hidden="true">
+          <div class="countdown-panel">
+            <p class="countdown-caption" id="countdownCaption">3초 후 게임이 시작됩니다.</p>
+            <p class="countdown-value" id="countdownValue">3</p>
+            <p class="countdown-tip" id="countdownTip">공구 참여자를 빠르게 눌러주세요!</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen result-screen" id="resultScreen">
+        <div></div>
+
+        <div class="result-stage">
+          <div class="result-particle-layer" id="resultParticleLayer" aria-hidden="true"></div>
+          <div class="success-result" id="successResult">
+            <div class="success-message">
+              <p class="success-eyebrow">공동구매 성공</p>
+              <p class="success-title">10% 쿠폰이<br />열렸어요</p>
+              <p class="success-copy">공동구매가 성사되어 바로 사용할 수 있어요.</p>
+            </div>
+            <div class="result-coupon-wrap">
+              <div class="result-coupon-glow" aria-hidden="true"></div>
+              <div class="result-coupon">
+                <span class="result-coupon-shine" aria-hidden="true"></span>
+                <span class="result-coupon-cut" aria-hidden="true"></span>
+                <span class="result-coupon-stub" aria-hidden="true"></span>
+                <p class="result-coupon-label">공동구매 할인 쿠폰</p>
+                <p class="result-coupon-value">10%</p>
+                <p class="result-coupon-title">할인 쿠폰</p>
+                <p class="result-coupon-note">오늘 공동구매 상품에 적용돼요</p>
+              </div>
+            </div>
+          </div>
+          <div class="fail-result" id="failResult">
+            <div class="fail-message">
+              <p class="fail-title">아쉽게<br />공구 인원 모으기에<br />실패했어요</p>
+              <p class="fail-copy"><strong>10% 쿠폰까지 조금 남았어요.</strong><br />공유하면 한 번 더 도전할 수 있어요.</p>
+            </div>
+            <div class="fail-visual" aria-hidden="true">
+              <div class="fail-coupon-preview">
+                <span class="fail-coupon-cut"></span>
+                <p class="fail-coupon-label">다음 도전 목표</p>
+                <p class="fail-coupon-value">30명</p>
+                <p class="fail-coupon-title">모으면 10% 쿠폰</p>
+              </div>
+              <span class="fail-mini-person" data-avatar="0"></span>
+              <span class="fail-mini-person" data-avatar="3"></span>
+              <span class="fail-mini-person" data-avatar="5"></span>
+            </div>
+          </div>
+          <div class="result-card" id="resultCard">
+            <div class="result-mark" id="resultMark">✓</div>
+            <p class="result-title" id="resultTitle">쿠폰이 열렸어요</p>
+            <p class="result-copy" id="resultCopy">10% 할인 쿠폰을 받았어요.</p>
+            <div class="mini-result">
+              <span>모은 인원</span>
+              <strong><span id="resultTotal">30</span> / 30명</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-zone" id="resultActions"></div>
+      </section>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const stages = [
+        { goal: 8, time: 12, spawnEvery: 850, visibleFor: 2200, size: 76, rareChance: 0.06, initial: 2 },
+        { goal: 10, time: 11, spawnEvery: 720, visibleFor: 1900, size: 72, rareChance: 0.1, initial: 3 },
+        { goal: 12, time: 10, spawnEvery: 620, visibleFor: 1650, size: 68, rareChance: 0.14, initial: 3 },
+      ];
+
+      const avatarStyles = [
+        { type: "longHair", bgA: "#FFF0F8", bgB: "#FFE1F0", shirtA: "#FF5FA0", shirtB: "#FF0F6D", hair: "#5A3A32", skin: "#FFD8BF", ring: "#FFD2E7" },
+        { type: "shortHair", bgA: "#F2EDFF", bgB: "#E4DAFF", shirtA: "#8B6BFF", shirtB: "#6847F5", hair: "#27364A", skin: "#FFDCC7", ring: "#DDD2FF" },
+        { type: "glasses", bgA: "#F5F5F7", bgB: "#EEEEF1", shirtA: "#787C89", shirtB: "#555967", hair: "#7B8794", skin: "#F5C9AA", ring: "#E2E2E7" },
+        { type: "bobHair", bgA: "#FFF0F8", bgB: "#F4ECFF", shirtA: "#FF66A7", shirtB: "#6847F5", hair: "#3D3148", skin: "#FFD6C2", ring: "#E8D9FF" },
+        { type: "cap", bgA: "#F2EDFF", bgB: "#FFF0F8", shirtA: "#9D80FF", shirtB: "#FF0F6D", hair: "#3C332F", skin: "#FFDABF", ring: "#E6DAFF" },
+        { type: "silverBob", bgA: "#F5F5F7", bgB: "#FFF0F8", shirtA: "#FF8EBA", shirtB: "#FF0F6D", hair: "#A7B0BB", skin: "#F3C6A6", ring: "#FFD9EA" },
+      ];
+
+      const state = {
+        chances: 1,
+        stage: 0,
+        stageCount: 0,
+        total: 0,
+        timeLeft: 0,
+        running: false,
+        couponIssued: false,
+        resultType: null,
+        timers: [],
+        clockFrame: null,
+        stageEndsAt: 0,
+      };
+      let avatarId = 0;
+
+      const introScreen = document.querySelector("#introScreen");
+      const gameScreen = document.querySelector("#gameScreen");
+      const resultScreen = document.querySelector("#resultScreen");
+      const startButton = document.querySelector("#startButton");
+      const chanceNote = document.querySelector("#chanceNote");
+      const goalTitle = document.querySelector("#goalTitle");
+      const timerText = document.querySelector("#timerText");
+      const meterFill = document.querySelector("#meterFill");
+      const playField = document.querySelector("#playField");
+      const fieldTarget = document.querySelector("#fieldTarget");
+      const fieldTargetCount = document.querySelector("#fieldTargetCount");
+      const guide = document.querySelector("#guide");
+      const countdownCaption = document.querySelector("#countdownCaption");
+      const countdownValue = document.querySelector("#countdownValue");
+      const countdownTip = document.querySelector("#countdownTip");
+      const resultCard = document.querySelector("#resultCard");
+      const resultMark = document.querySelector("#resultMark");
+      const resultTitle = document.querySelector("#resultTitle");
+      const resultCopy = document.querySelector("#resultCopy");
+      const resultTotal = document.querySelector("#resultTotal");
+      const resultActions = document.querySelector("#resultActions");
+      const resultParticleLayer = document.querySelector("#resultParticleLayer");
+      const toast = document.querySelector("#toast");
+
+      const resultParticles = [
+        ["#ff0f6d", "-140px", "-226px", "10px", "-16deg", "0ms", ""],
+        ["#6847f5", "138px", "-214px", "9px", "12deg", "70ms", ""],
+        ["#ff0f6d", "-184px", "-106px", "8px", "26deg", "120ms", ""],
+        ["#f2edff", "188px", "-86px", "15px", "-8deg", "90ms", "ticket"],
+        ["#fff0f8", "-158px", "98px", "16px", "18deg", "180ms", "ticket"],
+        ["#6847f5", "154px", "106px", "8px", "-22deg", "160ms", ""],
+        ["#ff5a70", "-88px", "-170px", "7px", "6deg", "230ms", ""],
+        ["#ff0f6d", "82px", "-164px", "7px", "-30deg", "210ms", ""],
+        ["#6847f5", "-110px", "164px", "8px", "18deg", "260ms", ""],
+        ["#ff0f6d", "108px", "172px", "9px", "12deg", "250ms", ""],
+        ["#f2edff", "0px", "-236px", "14px", "28deg", "150ms", "ticket"],
+        ["#fff0f8", "0px", "222px", "15px", "-18deg", "300ms", "ticket"],
+        ["#ff5a70", "-218px", "8px", "8px", "0deg", "260ms", ""],
+        ["#6847f5", "218px", "18px", "8px", "0deg", "270ms", ""],
+        ["#ff0f6d", "-44px", "-202px", "6px", "0deg", "360ms", ""],
+        ["#6847f5", "42px", "204px", "6px", "0deg", "380ms", ""],
+        ["#ff0f6d", "-206px", "-170px", "7px", "14deg", "420ms", "ticket"],
+        ["#6847f5", "202px", "166px", "7px", "-24deg", "460ms", "ticket"],
+        ["#ff5a70", "-176px", "214px", "6px", "0deg", "500ms", ""],
+        ["#ff0f6d", "176px", "-230px", "6px", "0deg", "520ms", ""],
+        ["#f2edff", "-72px", "242px", "13px", "18deg", "560ms", "ticket"],
+        ["#fff0f8", "72px", "-254px", "12px", "-12deg", "600ms", "ticket"],
+        ["#6847f5", "-226px", "-34px", "6px", "10deg", "980ms", ""],
+        ["#ff0f6d", "226px", "-42px", "6px", "-8deg", "1100ms", ""],
+        ["#ff5a70", "-132px", "-258px", "7px", "20deg", "1280ms", "ticket"],
+        ["#6847f5", "132px", "258px", "7px", "-20deg", "1420ms", "ticket"],
+        ["#fff0f8", "-214px", "126px", "14px", "-14deg", "1600ms", "ticket"],
+        ["#f2edff", "214px", "-126px", "14px", "14deg", "1740ms", "ticket"],
+        ["#ff0f6d", "-24px", "268px", "6px", "0deg", "1900ms", ""],
+        ["#6847f5", "24px", "-268px", "6px", "0deg", "2060ms", ""],
+      ];
+
+      function showScreen(screen) {
+        introScreen.classList.toggle("is-active", screen === "intro");
+        gameScreen.classList.toggle("is-active", screen === "game");
+        resultScreen.classList.toggle("is-active", screen === "result");
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("is-open");
+        window.setTimeout(() => toast.classList.remove("is-open"), 1700);
+      }
+
+      function hydratePreviewAvatars() {
+        document.querySelectorAll(".preview-person, .fail-mini-person").forEach((person) => {
+          const variant = Number(person.dataset.avatar || "0");
+          person.appendChild(createAvatar(variant));
+        });
+      }
+
+      function renderResultParticles() {
+        resultParticleLayer.innerHTML = resultParticles
+          .map(([color, x, y, size, rotate, delay, type]) => {
+            return `<span class="result-particle ${type}" style="--c:${color};--x:${x};--y:${y};--s:${size};--r:${rotate};--d:${delay}"></span>`;
+          })
+          .join("");
+      }
+
+      function clearTimers() {
+        if (state.clockFrame) {
+          cancelAnimationFrame(state.clockFrame);
+          state.clockFrame = null;
+        }
+
+        state.timers.forEach((timer) => {
+          clearInterval(timer);
+          clearTimeout(timer);
+        });
+        state.timers = [];
+      }
+
+      function clearField() {
+        playField.querySelectorAll(".person, .plus, .collecting-person").forEach((node) => node.remove());
+      }
+
+      function updateProgress() {
+        const cappedTotal = Math.min(30, state.total);
+        fieldTargetCount.textContent = cappedTotal;
+
+        const isClose = cappedTotal >= 25 && !state.couponIssued;
+        playField.classList.toggle("is-close", isClose);
+      }
+
+      function updateTimeProgress(stage = stages[state.stage], remainingMs = state.timeLeft * 1000) {
+        const clampedMs = Math.max(0, Math.min(stage.time * 1000, remainingMs));
+        const ratio = clampedMs / (stage.time * 1000);
+        const remainingSeconds = Math.ceil(clampedMs / 1000);
+        state.timeLeft = remainingSeconds;
+        timerText.textContent = `남은 시간 ${remainingSeconds}초`;
+        meterFill.style.width = `${ratio * 100}%`;
+        meterFill.style.setProperty("--meter-color", ratio <= 0.18 ? "var(--red)" : ratio <= 0.35 ? "var(--hot)" : "var(--primary)");
+      }
+
+      function setStageGoalText() {
+        goalTitle.textContent = `${state.stage + 1}단계`;
+      }
+
+      function renderCountdownStep(caption, value) {
+        countdownCaption.textContent = caption;
+        countdownValue.textContent = value;
+        countdownTip.classList.toggle("is-hidden", value === "게임 시작");
+        countdownValue.style.animation = "none";
+        countdownValue.offsetHeight;
+        countdownValue.style.animation = "";
+      }
+
+      function startCountdown() {
+        clearTimers();
+        clearField();
+        const stage = stages[state.stage];
+        state.running = false;
+        state.stageCount = 0;
+        state.timeLeft = stage.time;
+        playField.dataset.stage = `${state.stage + 1}`;
+        setStageGoalText();
+        updateProgress();
+        updateTimeProgress(stage, stage.time * 1000);
+        guide.style.display = "grid";
+        guide.classList.remove("is-continue");
+        guide.innerHTML = "참여자를 눌러<br />인원을 모아보세요";
+        gameScreen.classList.add("is-counting");
+
+        const steps = [
+          ["3초 후 게임이 시작됩니다.", "3"],
+          ["3초 후 게임이 시작됩니다.", "2"],
+          ["3초 후 게임이 시작됩니다.", "1"],
+          ["", "게임 시작"],
+        ];
+        let index = 0;
+        renderCountdownStep(steps[index][0], steps[index][1]);
+
+        const advance = () => {
+          index += 1;
+          if (index >= steps.length) {
+            gameScreen.classList.remove("is-counting");
+            runStage();
+            return;
+          }
+
+          renderCountdownStep(steps[index][0], steps[index][1]);
+          const delay = steps[index][1] === "게임 시작" ? 650 : 1000;
+          const timer = setTimeout(advance, delay);
+          state.timers.push(timer);
+        };
+
+        const timer = setTimeout(advance, 1000);
+        state.timers.push(timer);

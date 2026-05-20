@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>공동구매 쿠폰 게임</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --primary: #ff0f6d;
+        --primary-dark: #e6005d;
+        --primary-soft: #fff0f8;
+        --reward: #6847f5;
+        --reward-soft: #f2edff;
+        --progress: #181827;
+        --hot: #ff5a70;
+        --red: #f04452;
+        --text: #151515;
+        --muted: #555967;
+        --soft: #9a9aa3;
+        --line: #e8e8ec;
+        --bg: #f7f8fa;
+        --white: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #eef1f4;
+        color: var(--text);
+        font-family:
+          -apple-system,
+          BlinkMacSystemFont,
+          "Apple SD Gothic Neo",
+          "Segoe UI",
+          sans-serif;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .app {
+        width: min(100%, 430px);
+        height: 100dvh;
+        min-height: 560px;
+        margin: 0 auto;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 10%, rgba(255, 15, 109, 0.13), transparent 33%),
+          linear-gradient(180deg, #fff8fc 0%, #faf7ff 48%, #f7f8fa 100%);
+      }
+
+      .screen {
+        display: none;
+        height: 100%;
+        padding:
+          max(18px, env(safe-area-inset-top))
+          clamp(18px, 5vw, 24px)
+          max(18px, env(safe-area-inset-bottom));
+      }
+
+      .screen.is-active {
+        display: grid;
+      }
+
+      .intro-screen,
+      .result-screen {
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        gap: clamp(14px, 2.8vh, 24px);
+      }
+
+      .game-screen {
+        position: relative;
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: clamp(10px, 2vh, 16px);
+      }
+
+      .headline {
+        padding-top: clamp(6px, 1.6vh, 18px);
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--primary);
+        font-size: clamp(14px, 3.6vw, 15px);
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(26px, 7vw, 33px);
+        line-height: 1.24;
+        letter-spacing: 0;
+        font-weight: 900;
+      }
+
+      .subcopy {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: clamp(14px, 3.8vw, 16px);
+        line-height: 1.48;
+      }
+
+      .stage {
+        position: relative;
+        min-height: 0;
+        overflow: hidden;
+        border: 1px solid #f3edf4;
+        border-radius: clamp(22px, 6vw, 30px);
+        background:
+          radial-gradient(circle at 50% 30%, rgba(255, 15, 109, 0.13), transparent 31%),
+          linear-gradient(180deg, #fffafd, #f8f4ff 58%, #f8f8fa);
+        box-shadow: 0 18px 38px rgba(255, 15, 109, 0.09);
+      }
+
+      .target-badge {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        display: grid;
+        place-items: center;
+        width: clamp(132px, 38vw, 166px);
+        height: clamp(132px, 38vw, 166px);
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow:
+          0 18px 34px rgba(255, 15, 109, 0.14),
+          inset 0 0 0 10px var(--primary-soft);
+        text-align: center;
+        transform: translate(-50%, -50%);
+      }
+
+      .field-target {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        width: clamp(86px, 24vw, 110px);
+        height: clamp(86px, 24vw, 110px);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.76);
+        color: var(--primary);
+        box-shadow:
+          0 16px 28px rgba(255, 15, 109, 0.09),
+          inset 0 0 0 8px rgba(255, 15, 109, 0.08);
+        text-align: center;
+        transform: translate(-50%, -50%);
+        transition: box-shadow 180ms ease, background 180ms ease, transform 180ms ease;
+      }
+
+      .field-target strong {
+        display: block;
+        font-size: clamp(27px, 8vw, 38px);
+        line-height: 1;
+        font-weight: 900;
+      }
+
+      .field-target span {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .game-stage.is-close .field-target {
+        background: #ffffff;
+        box-shadow:
+          0 18px 34px rgba(255, 15, 109, 0.18),
+          0 0 0 9px rgba(255, 15, 109, 0.1),
+          inset 0 0 0 8px rgba(104, 71, 245, 0.12);
+        transform: translate(-50%, -50%) scale(1.04);
+      }
+
+      .target-number {
+        margin: 0;
+        color: var(--primary);
+        font-size: clamp(42px, 12vw, 58px);
+        line-height: 1;
+        font-weight: 900;
+      }
+
+      .target-text {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .preview-person,

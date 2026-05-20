@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>공동구매 쿠폰 게임</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #eef1f4;
+        color: #151515;
+        font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+      }
+      .loading {
+        font-size: 16px;
+        font-weight: 800;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loading">불러오는 중...</div>
+    <script>
+      const parts = [
+        'chunks/part-001.html',
+        'chunks/part-002.html',
+        'chunks/part-003.html',
+        'chunks/part-004.html',
+        'chunks/part-005.html',
+      ];
+
+      Promise.all(parts.map((part) => fetch(part).then((response) => {
+        if (!response.ok) throw new Error(part);
+        return response.text();
+      }))).then((chunks) => {
+        document.open();
+        document.write(chunks.join(''));
+        document.close();
+      }).catch((error) => {
+        console.error(error);
+        document.body.innerHTML = '<main style="padding:24px;text-align:center;font-weight:800">페이지를 불러오지 못했습니다.</main>';
+      });
+    </script>
+  </body>
+</html>
